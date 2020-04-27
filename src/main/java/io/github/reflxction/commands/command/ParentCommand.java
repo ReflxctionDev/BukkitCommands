@@ -84,6 +84,7 @@ public class ParentCommand implements TabExecutor {
             String[] finalArgs = (String[]) ArrayUtils.subarray(args, 1, args.length);
             if (finalArgs.length == 0) return Collections.emptyList();
             CommandWrapper wrapper = commandHandler.getCommands().get(args[0]);
+            if (wrapper == null) return Collections.emptyList();
             String tab = wrapper.tab;
             if (wrapper.tab.equals(PluginSubcommand.DEFAULT_COMPLETION)) return Collections.emptyList();
             TabContext context = new TabContext(finalArgs, sender, wrapper, command, commandHandler);
