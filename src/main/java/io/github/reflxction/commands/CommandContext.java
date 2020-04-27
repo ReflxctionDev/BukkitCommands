@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.reflxction.commands.command;
+package io.github.reflxction.commands;
 
-import io.github.reflxction.commands.command.CommandCallback.CommandCallbackException;
-import io.github.reflxction.commands.command.CommandResolvers.Resolver;
+import io.github.reflxction.commands.CommandCallback.CommandCallbackException;
+import io.github.reflxction.commands.CommandResolvers.Resolver;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

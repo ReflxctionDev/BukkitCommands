@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.reflxction.commands.command;
+package io.github.reflxction.commands;
 
 import org.bukkit.ChatColor;
 
@@ -40,8 +40,16 @@ public interface CommandCallback {
      */
     class CommandCallbackException extends RuntimeException {
 
+        /**
+         * Whether should the command be prefixed
+         */
+        private boolean prefix;
+
+        /**
+         * Creates a new exception with an empty message
+         */
         public CommandCallbackException() {
-            this("");
+            this("", false);
         }
 
         /**
@@ -51,6 +59,16 @@ public interface CommandCallback {
          */
         public CommandCallbackException(String message) {
             super(colorize(message));
+            this.prefix = true;
+        }
+
+        public CommandCallbackException(String message, boolean prefix) {
+            this(message);
+            this.prefix = prefix;
+        }
+
+        public boolean prefix() {
+            return prefix;
         }
     }
 

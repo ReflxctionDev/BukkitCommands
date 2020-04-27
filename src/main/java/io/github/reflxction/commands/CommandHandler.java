@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.reflxction.commands.command;
+package io.github.reflxction.commands;
 
-import io.github.reflxction.commands.command.CommandCallback.CommandCallbackException;
-import io.github.reflxction.commands.command.CommandResolvers.ResolverFallback;
+import io.github.reflxction.commands.CommandCallback.CommandCallbackException;
+import io.github.reflxction.commands.CommandResolvers.ResolverFallback;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -99,7 +99,7 @@ public class CommandHandler {
             wrapper.callback.onProcess(context);
         } catch (CommandCallbackException e) {
             if (e.getMessage().isEmpty()) return;
-            sender.sendMessage(e.getMessage());
+            sender.sendMessage((e.prefix() ? messagingPrefix : "") + e.getMessage());
         }
     }
 

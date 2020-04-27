@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.reflxction.commands.command;
+package io.github.reflxction.commands;
 
-
-import io.github.reflxction.commands.command.CommandCallback.CommandCallbackException;
-import io.github.reflxction.commands.command.PluginSubcommand.ParameterResolver;
-import io.github.reflxction.commands.command.PluginSubcommand.TabContext;
-import io.github.reflxction.commands.command.PluginSubcommand.TabProvider;
+import io.github.reflxction.commands.CommandCallback.CommandCallbackException;
+import io.github.reflxction.commands.PluginSubcommand.ParameterResolver;
+import io.github.reflxction.commands.PluginSubcommand.TabContext;
+import io.github.reflxction.commands.PluginSubcommand.TabProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;

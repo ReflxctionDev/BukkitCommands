@@ -1,10 +1,9 @@
-package io.github.reflxction.commands.command;
-
-import io.github.reflxction.commands.command.CommandResolvers.Resolver;
-import io.github.reflxction.commands.command.CommandResolvers.ResolverFallback;
-import io.github.reflxction.commands.command.PluginSubcommand.ParameterResolver;
-import io.github.reflxction.commands.command.PluginSubcommand.TabContext;
-import io.github.reflxction.commands.command.PluginSubcommand.TabProvider;
+package io.github.reflxction.commands;
+import io.github.reflxction.commands.CommandResolvers.Resolver;
+import io.github.reflxction.commands.CommandResolvers.ResolverFallback;
+import io.github.reflxction.commands.PluginSubcommand.ParameterResolver;
+import io.github.reflxction.commands.PluginSubcommand.TabContext;
+import io.github.reflxction.commands.PluginSubcommand.TabProvider;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
