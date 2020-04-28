@@ -1,4 +1,5 @@
 package io.github.reflxction.commands;
+
 import io.github.reflxction.commands.CommandResolvers.Resolver;
 import io.github.reflxction.commands.CommandResolvers.ResolverFallback;
 import io.github.reflxction.commands.PluginSubcommand.ParameterResolver;
@@ -82,11 +83,11 @@ public class ParentCommand implements TabExecutor {
         if (args.length > 1) {
             String[] finalArgs = (String[]) ArrayUtils.subarray(args, 1, args.length);
             if (finalArgs.length == 0) return Collections.emptyList();
-            CommandWrapper wrapper = commandHandler.getCommands().get(args[0]);
-            if (wrapper == null) return Collections.emptyList();
-            String tab = wrapper.tab;
-            if (wrapper.tab.equals(PluginSubcommand.DEFAULT_COMPLETION)) return Collections.emptyList();
-            TabContext context = new TabContext(finalArgs, sender, wrapper, command, commandHandler);
+            SubcommandInvokation subcommand = commandHandler.getCommands().get(args[0]);
+            if (subcommand == null) return Collections.emptyList();
+            String tab = subcommand.tab;
+            if (subcommand.tab.equals(PluginSubcommand.DEFAULT_COMPLETION)) return Collections.emptyList();
+            TabContext context = new TabContext(finalArgs, sender, subcommand, command, commandHandler);
             String[] tabs = tab.split(" ");
 
             String thisTab;
@@ -120,7 +121,7 @@ public class ParentCommand implements TabExecutor {
      * @param callback Command callback to register
      * @return This command
      */
-    public ParentCommand contain(CommandCallback callback) {
+    public ParentCommand contain(Object callback) {
         commandHandler.register(callback);
         return this;
     }
@@ -132,7 +133,7 @@ public class ParentCommand implements TabExecutor {
      * @param withHandler Function to register
      * @return This command
      */
-    public ParentCommand contain(Function<CommandHandler, CommandCallback> withHandler) {
+    public ParentCommand contain(Function<CommandHandler, Object> withHandler) {
         commandHandler.register(withHandler.apply(commandHandler));
         return this;
     }

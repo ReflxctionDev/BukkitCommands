@@ -23,6 +23,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,12 +38,12 @@ public class CommandHandler {
     /**
      * A map of all commands
      */
-    private final Map<String, CommandWrapper> commands = new HashMap<>();
+    private final Map<String, SubcommandInvokation> commands = new HashMap<>();
 
     /**
      * A map of all commands, main names only
      */
-    private final Map<String, CommandWrapper> namesOnly = new HashMap<>();
+    private final Map<String, SubcommandInvokation> namesOnly = new HashMap<>();
 
     /**
      * The command resolvers
@@ -57,7 +58,7 @@ public class CommandHandler {
     Consumer<CommandContext> invalidCommand = (c) -> c.reply("&cInvalid sub-command. Run &e/%s help &cfor a list of commands", c.getCommand().getName());
     Consumer<CommandContext> noPermission = (c) -> c.reply("&cYou do not have permission to run this command!");
     Consumer<CommandContext> notPlayer = (c) -> c.reply("&cYou must be a player to use this command!");
-    Consumer<CommandContext> invalidCommandUsage = (c) -> c.reply("&cInvalid usage. Try &e/%s %s &d%s&c.", c.getCommand().getName(), c.getWrapper().name, c.getWrapper().parameters);
+    Consumer<CommandContext> invalidCommandUsage = (c) -> c.reply("&cInvalid usage. Try &e/%s %s &d%s&c.", c.getCommand().getName(), c.getSubscription().name, c.getSubscription().parameters);
     ResolverFallback resolverFail = (name, argument, context) -> context.reply("&cInvalid %s: &e%s", name, argument);
 
     /**
@@ -65,7 +66,7 @@ public class CommandHandler {
      *
      * @param callback Command to register. Must be annotated with {@link PluginSubcommand}.
      */
-    public void register(CommandCallback callback) {
+    public void registerCallback(CommandCallback callback) {
         if (!callback.getClass().isAnnotationPresent(PluginSubcommand.class))
             throw new IllegalArgumentException("Class " + callback.getClass().getName() + " must be annotated with PluginSubcommand!");
         PluginSubcommand p = callback.getClass().getAnnotation(PluginSubcommand.class);
@@ -74,6 +75,24 @@ public class CommandHandler {
         namesOnly.put(p.name(), wrapper);
         for (String alias : p.aliases())
             commands.put(alias, wrapper);
+
+    }
+
+    public void register(Object object) {
+        if (object instanceof CommandCallback) registerCallback(((CommandCallback) object));
+        for (Method method : object.getClass().getDeclaredMethods()) registerMethod(method, object);
+        for (Method method : object.getClass().getMethods()) registerMethod(method, object);
+    }
+
+    private void registerMethod(Method method, Object instance) {
+        if (method.isAnnotationPresent(PluginSubcommand.class)) {
+            PluginSubcommand p = method.getAnnotation(PluginSubcommand.class);
+            MethodSubcommand subcommand = new MethodSubcommand(method, instance, p.name(), p.description(), p.parameters(), p.aliases(), Arrays.stream(p.helpMenu()).map(CommandCallback::colorize).collect(Collectors.toList()), p.permission(), p.permissionAccess(), p.minimumArguments(), p.requirePlayer(), p.tabCompletions());
+            commands.put(p.name(), subcommand);
+            namesOnly.put(p.name(), subcommand);
+            for (String alias : p.aliases())
+                commands.put(alias, subcommand);
+        }
     }
 
     /**
@@ -85,18 +104,18 @@ public class CommandHandler {
      */
     public void onCommand(Command command, CommandSender sender, String[] args) {
         try {
-            @Nullable CommandWrapper wrapper = commands.get(args[0]);
+            @Nullable SubcommandInvokation subscription = commands.get(args[0]);
             String[] finalArgs = (String[]) ArrayUtils.subarray(args, 1, args.length);
-            CommandContext context = new CommandContext(sender, finalArgs, command, wrapper, this);
-            if (wrapper == null) {
+            CommandContext context = new CommandContext(sender, finalArgs, command, subscription, this);
+            if (subscription == null) {
                 invalidCommand.accept(context);
                 throw new CommandCallbackException();
             }
-            if (wrapper.requirePlayer) context.requirePlayer();
-            context.requireArgs(wrapper.minimumArgs);
-            if (wrapper.permission != null)
-                context.checkPermission(wrapper.permission);
-            wrapper.callback.onProcess(context);
+            if (subscription.requirePlayer) context.requirePlayer();
+            context.requireArgs(subscription.minimumArgs);
+            if (subscription.permission != null)
+                context.checkPermission(subscription.permission);
+            subscription.invoke(context);
         } catch (CommandCallbackException e) {
             if (e.getMessage().isEmpty()) return;
             sender.sendMessage((e.prefix() ? messagingPrefix : "") + e.getMessage());
@@ -108,7 +127,7 @@ public class CommandHandler {
      *
      * @return A map of all commands
      */
-    public Map<String, CommandWrapper> getCommands() {
+    public Map<String, SubcommandInvokation> getCommands() {
         return commands;
     }
 
@@ -117,7 +136,7 @@ public class CommandHandler {
      *
      * @return A map of all commands, excluding aliases
      */
-    public Map<String, CommandWrapper> getNamesOnly() {
+    public Map<String, SubcommandInvokation> getNamesOnly() {
         return namesOnly;
     }
 

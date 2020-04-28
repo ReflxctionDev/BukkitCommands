@@ -45,7 +45,7 @@ public class CommandContext {
     /**
      * The command being invoked.
      */
-    private final CommandWrapper wrapper;
+    private final SubcommandInvokation subscription;
 
     /**
      * The command handler
@@ -58,14 +58,14 @@ public class CommandContext {
      * @param sender         The command sender
      * @param args           The command arguments
      * @param command        The internal Bukkit command
-     * @param wrapper        The command wrapper this is being ran for
+     * @param wrapper        The command subscription this is being ran for
      * @param commandHandler The command handler invoking this command
      */
-    public CommandContext(CommandSender sender, String[] args, Command command, CommandWrapper wrapper, CommandHandler commandHandler) {
+    public CommandContext(CommandSender sender, String[] args, Command command, SubcommandInvokation wrapper, CommandHandler commandHandler) {
         this.sender = sender;
         this.args = args;
         this.command = command;
-        this.wrapper = wrapper;
+        this.subscription = wrapper;
         this.commandHandler = commandHandler;
     }
 
@@ -105,8 +105,8 @@ public class CommandContext {
         return commandHandler;
     }
 
-    public CommandWrapper getWrapper() {
-        return wrapper;
+    public SubcommandInvokation getSubscription() {
+        return subscription;
     }
 
     /**

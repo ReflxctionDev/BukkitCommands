@@ -14,52 +14,25 @@
  * limitations under the License.
  */
 package io.github.reflxction.commands;
-import org.bukkit.command.CommandSender;
-import org.bukkit.permissions.Permission;
+
 import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
 
 /**
- * An object wrapper for {@link PluginSubcommand}
+ * An object wrapper for {@link CommandCallback} which is annotated by {@link PluginSubcommand}
  */
-public class CommandWrapper {
+public class CommandWrapper extends SubcommandInvokation {
 
-    public final String name, description, parameters;
-    public final String[] aliases;
-    public final List<String> helpMenu;
-    public Permission permission = null;
-    public final int minimumArgs;
-    public final boolean requirePlayer;
-    public final String tab;
-    public final CommandCallback callback;
+    private CommandCallback callback;
 
-    public CommandWrapper(String name,
-                          String description,
-                          String parameters,
-                          String[] aliases,
-                          List<String> helpMenu,
-                          String permission,
-                          PermissionDefault permissionAccess,
-                          int minimumArgs,
-                          boolean requirePlayer,
-                          String tab,
-                          CommandCallback callback) {
-        this.name = name;
-        this.description = description;
-        this.parameters = parameters;
-        this.aliases = aliases;
-        this.helpMenu = helpMenu;
-        if (!permission.equals(PluginSubcommand.NO_PERMISSION))
-            this.permission = new Permission(permission, permissionAccess);
-        this.minimumArgs = minimumArgs;
-        this.requirePlayer = requirePlayer;
-        this.tab = tab;
+    public CommandWrapper(String name, String description, String parameters, String[] aliases, List<String> helpMenu, String permission, PermissionDefault permissionAccess, int minimumArgs, boolean requirePlayer, String tab, CommandCallback callback) {
+        super(name, description, parameters, aliases, helpMenu, permission, permissionAccess, minimumArgs, requirePlayer, tab);
         this.callback = callback;
     }
 
-    public boolean hasPermission(CommandSender sender) {
-        return permission == null || sender.hasPermission(permission);
+    @Override
+    public void invoke(CommandContext context) {
+        callback.onProcess(context);
     }
-
 }

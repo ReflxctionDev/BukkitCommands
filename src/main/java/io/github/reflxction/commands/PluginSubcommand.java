@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package io.github.reflxction.commands;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionDefault;
@@ -29,7 +30,7 @@ import java.util.List;
  * Represents a plugin's subcommand
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.METHOD})
 public @interface PluginSubcommand {
 
     /**
@@ -115,6 +116,16 @@ public @interface PluginSubcommand {
     String NO_PERMISSION = "_no_permission_";
 
     /**
+     * Represents a parameter which is optional, and is not an obligatory to have while running the
+     * command.
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.PARAMETER)
+    @interface OptionalParameter {
+
+    }
+
+    /**
      * An interface which acts like a converter between specific types
      *
      * @param <R> Type to convert to
@@ -159,12 +170,12 @@ public @interface PluginSubcommand {
         private CommandContext fakeContext;
         private CommandHandler handler;
 
-        public TabContext(String[] args, CommandSender sender, CommandWrapper wrapper, Command command, CommandHandler handler) {
+        public TabContext(String[] args, CommandSender sender, SubcommandInvokation subcommand, Command command, CommandHandler handler) {
             this.args = args;
             this.sender = sender;
             this.command = command;
             this.handler = handler;
-            fakeContext = new CommandContext(sender, args, command, wrapper, handler);
+            fakeContext = new CommandContext(sender, args, command, subcommand, handler);
         }
 
         public String[] getArgs() {
