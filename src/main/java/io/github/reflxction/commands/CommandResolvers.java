@@ -21,6 +21,7 @@ import io.github.reflxction.commands.PluginSubcommand.TabContext;
 import io.github.reflxction.commands.PluginSubcommand.TabProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,9 +80,11 @@ public class CommandResolvers {
 
         // register Bukkit types
         registerResolver(Player.class, new Resolver<>("player", (a, c) -> Bukkit.getPlayer(a)));
+        registerResolver(World.class, new Resolver<>("world", (a, c) -> Bukkit.getWorld(a)));
         registerResolver(OfflinePlayer.class, new Resolver<>("player", (a, c) -> Bukkit.getOfflinePlayer(a)));
 
         registerStaticTab("players", PLAYERS); // bukkit handles that by itself.
+        registerStaticTab("nothing", Collections.emptyList());
     }
 
     /**
