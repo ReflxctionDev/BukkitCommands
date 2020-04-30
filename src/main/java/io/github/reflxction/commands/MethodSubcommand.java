@@ -15,6 +15,7 @@
  */
 package io.github.reflxction.commands;
 
+import io.github.reflxction.commands.CommandCallback.CommandCallbackException;
 import io.github.reflxction.commands.CommandResolvers.Resolver;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -67,6 +68,7 @@ public class MethodSubcommand extends SubcommandInvokation {
         try {
             method.invoke(instance, parameters);
         } catch (IllegalAccessException | InvocationTargetException e) {
+            if (e.getCause() instanceof CommandCallbackException) return;
             e.printStackTrace();
             throw new CommandCallback.CommandCallbackException("An error occurred while executing the command method callback. Check console for errors.");
         }

@@ -116,12 +116,26 @@ public @interface PluginSubcommand {
     String NO_PERMISSION = "_no_permission_";
 
     /**
-     * Represents a parameter which is optional, and is not an obligatory to have while running the
-     * command.
+     * The default parameter.
+     */
+    String OPTIONAL_PARAM_DEFAULT = "_no_default_";
+
+    /**
+     * Represents an optional parameter
+     *
+     * @deprecated Unimplemented.
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.PARAMETER)
+    @Deprecated
     @interface OptionalParameter {
+
+        /**
+         * The default value of the argument
+         *
+         * @return The default value
+         */
+        String defaultValue() default OPTIONAL_PARAM_DEFAULT;
 
     }
 
