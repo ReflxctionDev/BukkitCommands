@@ -56,6 +56,7 @@ public class CommandResolvers {
     /**
      * Creates an instance of all the resolvers
      */
+    @SuppressWarnings("deprecation") // Bukkit#getOfflinePlayer...
     public CommandResolvers() {
         // register primitives
         registerResolver(String.class, new Resolver<>("string", (a, c) -> a));
