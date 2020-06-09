@@ -68,7 +68,7 @@ public class MethodSubcommand extends SubcommandInvokation {
         try {
             method.invoke(instance, parameters);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            if (e.getCause() instanceof CommandCallbackException) return;
+            if (e.getCause() instanceof CommandCallbackException) throw (CommandCallbackException) e.getCause();
             e.printStackTrace();
             throw new CommandCallback.CommandCallbackException("An error occurred while executing the command method callback. Check console for errors.");
         }
