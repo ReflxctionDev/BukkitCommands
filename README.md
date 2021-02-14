@@ -1,3 +1,6 @@
+# NOTE
+This has been deprecated in favor of https://github.com/ReflxctionDev/cub, a platform-independent, much more powerful annotation-based commands framework
+
 [![](https://jitpack.io/v/ReflxctionDev/BukkitCommands.svg)](https://jitpack.io/#ReflxctionDev/BukkitCommands)
 # BukkitCommands
 **BukkitCommands** is a simple commands framework which simplifies the creation of sub-commands. No more boilerplate!
